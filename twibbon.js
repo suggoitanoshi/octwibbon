@@ -1,11 +1,15 @@
 let twibbon = new Image();
 let userPic = new Image();
 
+let tempUserPic = new Image();
+let tempUserCanvas = document.createElement('canvas');
+
 let canvas = document.createElement('canvas');
 canvas.id = 'twibbon-edit';
 document.body.insertBefore(canvas, document.getElementById('slidercontainer'));
 let ctx = canvas.getContext('2d');
 let canvasToHtmlScale=1;
+let rotation = 0;
 
 let userPicX = 0;
 let userPicY = 0;
@@ -19,14 +23,84 @@ twibbonFile.addEventListener('change', (e) => {
   handleFileChange(e, twibbon);
 });
 userPicFile.addEventListener('change', (e) => {
-  handleFileChange(e, userPic);
+  handleFileChange(e, tempUserPic, (orientation)=>{
+    switch(orientation){
+      case 1:
+        rotation = 0;
+        break;
+      case 3:
+        rotation = 180;
+        break;
+      case 6:
+        rotation = 90;
+        break;
+      case 8:
+        rotation = -90;
+        break;
+      default:
+        rotation = 0;
+        break;
+    }
+    drawUserPic();
+  });
+  tempUserPic.onload = (e) => {
+    let ctx = tempUserCanvas.getContext('2d');
+    if(rotation == 0){
+      userPic.src = tempUserPic.src;
+      return;
+    }
+    else if(rotation == 180){
+      tempUserCanvas.width = tempUserPic.width;
+      tempUserCanvas.height = tempUserPic.height;
+    }
+    else {
+      tempUserCanvas.width = tempUserPic.height;
+      tempUserCanvas.height = tempUserPic.width;
+    }
+    ctx.translate(tempUserPic.width/2, tempUserPic.height/2);
+    ctx.rotate(rotation*Math.PI/180);
+    ctx.translate(-tempUserPic.width/2, -tempUserPic.height/2);
+    ctx.drawImage(tempUserPic, 0, 0);
+    userPic.src = tempUserCanvas.toDataURL();
+  }
   userPicX = 0;
   userPicY = 0;
 });
 
-function handleFileChange(e, item){
+function handleFileChange(e, item, callback){
   file = e.target.files[0];
   if(file.type.match('image.*')){
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      let view = new DataView(e.target.result);
+      if(view.getUint16(0, false) != 0xFFD8){
+        return callback(-2);
+      }
+      let length = view.byteLength, offset = 2;
+      while(offset < length){
+        if(view.getUint16(offset+2, false) <= 8) return callback(-1);
+        let marker = view.getUint16(offset, false);
+        offset += 2;
+        if(marker == 0xFFE1){
+          if(view.getUint32(offset += 2, false) != 0x45786966){
+            return callback(-1);
+          }
+          let little = view.getUint16(offset += 6, false) == 0x4949;
+          offset += view.getUint32(offset + 4, little);
+          let tags = view.getUint16(offset, little);
+          offset += 2;
+          for(let i = 0; i < tags; i++){
+            if(view.getUint16(offset + (i * 12), little) == 0x0112){
+              return callback(view.getUint16(offset + (i * 12) + 8, little));
+            }
+          }
+        }
+        else if((marker&0xFF00) != 0xFF00) break;
+        else offset += view.getUint16(offset, false);
+      }
+      return callback(-1);
+    }
+    reader.readAsArrayBuffer(e.target.files[0]);
     item.src = URL.createObjectURL(e.target.files[0]);
   }
   else{
