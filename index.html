@@ -7,7 +7,7 @@
     <style>
       #twibbon-edit{
         background: rgba(0,0,0,0);
-        width: 70%;
+        width: 100%;
       }
       .size-control-handle{
         width: 3em;
@@ -22,9 +22,18 @@
       }
       input[type=range]{
         background: #333333;
+        width: 100%;
+      }
+      #rangeback{
+        background: #dae;
       }
       field{
         display: block;
+        padding: .7em;
+        border: 1px solid #d3d3d3;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1em;
       }
       footer{
         color: #aaa;
@@ -40,8 +49,11 @@
       <input name="userpic" id="userpic" type="file" accept="image/*" maxlength=1>
       <button id="get">Get image!</button>
     </field>
-    <div id="slidercontainer"><label for="scale">Scale: </label><input type="range" min=1 max=100 value=1 id="imagescaler" name="scale"></div>
+    <div id="slidercontainer">
+      <label for="scale">Scale: </label>
+      <div id="rangeback"><input type="range" min=1 max=100 value=1 id="imagescaler" name="scale"></div>
+    </div>
     <script src="twibbon.js"></script>
-    <footer><span>Hobby project by suggoitanoshi</span></footer>
+    <footer><span>Hobby project by suggoitanoshi, source at <a href="https://github.com/vex8/octwibbon">GitHub</a>, hosted in netlify.</span></footer>
   </body>
 </html>
