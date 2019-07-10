@@ -36,8 +36,14 @@ function handleFileChange(e, item){
 
 twibbon.addEventListener('load', (e) => initializeCanvas(e.target));
 userPic.addEventListener('load', (e) =>{
-  userPicWidth = userPic.width;
-  userPicHeight = userPic.height;
+  if(userPic.width >= userPic.height){
+    userPicHeight = canvas.height;
+    userPicWidth = userPic.width * (canvas.height/userPic.height);
+  }
+  else{
+    userPicWidth = canvas.width;
+    userPicHeight = userPic.height * (canvas.width/userPic.width);
+  }
   drawUserPic();
 });
 
@@ -58,7 +64,7 @@ function drawUserPic(){
 
 let debounce = performance.now();
 document.querySelector('#imagescaler').addEventListener('change', (e)=>{
-  scale = e.target.value/25;
+  scale = .75+e.target.value/25;
   if(performance.now() - debounce >= 50){
     debounce = performance.now();
     drawUserPic();
