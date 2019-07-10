@@ -73,7 +73,7 @@ let isDraggingImage = false;
 canvas.addEventListener('mousedown',(e) => handleDownEvent(e, e));
 canvas.addEventListener('touchstart', (e)=> handleDownEvent(e.touches[0], e));
 function handleDownEvent(pointer, e){
-  if(contains(userPicX, userPicY, userPicWidth, userPicHeight,
+  if(contains(userPicX, userPicY, userPicWidth*scale, userPicHeight*scale,
     (pointer.clientX - offsetLeft)/canvasToHtmlScale, (pointer.clientY - offsetTop)/canvasToHtmlScale)){
     isDraggingSizer = false;
     isDraggingImage = true;
@@ -110,7 +110,7 @@ function handleMoveEvent(pointer){
   }
 }
 document.getElementById('get').addEventListener('click', (e)=>{
-  window.open().location = canvas.toDataURL("image/png");
+  window.open().location = canvas.toDataURL("image/jpeg");
 });
 
 function contains(imageX, imageY, imageWidth, imageHeight, x, y){
