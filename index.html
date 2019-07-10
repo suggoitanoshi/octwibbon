@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Twibbon Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      #twibbon-edit{
+        background: rgba(0,0,0,0);
+        width: 70%;
+      }
+      .size-control-handle{
+        width: 3em;
+        height: 3em;
+        display: block;
+        background: rgba(0,0,0,.5);
+        position: absolute;
+      }
+      .size-control-handle:hover{
+        background: rgba(0,0,0,0.8);
+        cursor: grab;
+      }
+      input[type=range]{
+        background: #333333;
+      }
+      field{
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <field>
+      <label for="twibbon">Twibbon image file: </label>
+      <input name="twibbon" id="twibbon" type="file" accept="image/*" maxlength=1>
+      <label for="userpic">Your photo: </label>
+      <input name="userpic" id="userpic" type="file" accept="image/*" maxlength=1>
+      <button id="get">Get image!</button>
+    </field>
+    <div id="slidercontainer"><label for="scale">Scale: </label><input type="range" min=1 max=100 value=1 id="imagescaler" name="scale"></div>
+    <script src="twibbon.js"></script>
+  </body>
+</html>
