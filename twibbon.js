@@ -190,7 +190,8 @@ function handleMoveEvent(pointer){
   }
 }
 document.getElementById('get').addEventListener('click', (e)=>{
-  window.open().location = canvas.toDataURL("image/jpeg");
+  let dlLink = document.querySelector('#dl-link');
+  dlLink.href =  canvas.toDataURL('image/jpeg');
 });
 
 function contains(imageX, imageY, imageWidth, imageHeight, x, y){
